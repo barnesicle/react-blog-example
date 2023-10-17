@@ -161,7 +161,7 @@ type Post = {
 
 }
 
-function App() {
+function ViewFullPost() {
 
   const [post, setPost] = React.useState<Post | null>(null);
 
@@ -169,19 +169,14 @@ function App() {
 
   React.useEffect(() => {
 
-    if (params.id) {
-      const postByURL = posts.find((post) => {
-        return post.url === params.id;
-      });
+    const postByURL = posts.find((post) => {
+      return post.url === params.id;
+    });
 
-      if (postByURL) {
-        document.title = postByURL.title;
-        document.getElementsByName('description')[0].setAttribute('content', postByURL.description);
-        setPost(postByURL);
-      }
-
-    } else {
-      setPost(null);
+    if (postByURL) {
+      document.title = postByURL.title;
+      document.getElementsByName('description')[0].setAttribute('content', postByURL.description);
+      setPost(postByURL);
     }
 
   }, [params.id]);
@@ -199,7 +194,24 @@ function App() {
 
         {post && <FullPost {...post} />}
 
-        {!post && posts.map((post) => {
+        {/* TODO Display error / redirect to 404 page if post is null */}
+
+      </Box>
+  );
+}
+
+export function ViewAllPosts() {
+  return (
+      <Box sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        padding: 2,
+      }}>
+
+        {posts.map((post) => {
           return <PostCard key={post.title} {...post} />;
         })}
 
@@ -210,8 +222,8 @@ function App() {
 const Main = () => {
   return <BrowserRouter>
     <Routes>
-      <Route path="/" element={<App />} />
-      <Route path="/:id" element={<App />} />
+      <Route path="/" element={<ViewAllPosts />} />
+      <Route path="/:id" element={<ViewFullPost />} />
     </Routes>
   </BrowserRouter>
 }
